@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useRecipeStore from './useRecipeStore';
+import { useRecipeStore } from './recipeStore';
 
 function AddRecipeForm() {
   const [title, setTitle] = useState('');
@@ -17,11 +17,11 @@ function AddRecipeForm() {
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        placeholder="Recipe title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        placeholder="Enter recipe"
       />
-      <button type="submit">Add Recipe</button>
+      <button type="submit">Add</button>
     </form>
   );
 }
