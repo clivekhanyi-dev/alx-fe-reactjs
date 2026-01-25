@@ -3,13 +3,15 @@ import { useRecipeStore } from './recipeStore';
 
 function AddRecipeForm() {
   const [title, setTitle] = useState('');
-  const addRecipe = useRecipeStore((state) => state.addRecipe);
+  const recipes = useRecipeStore((state) => state.recipes);
+  const setRecipes = useRecipeStore((state) => state.setRecipes);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title) return;
 
-    addRecipe({ id: Date.now(), title });
+    const newRecipe = { id: Date.now(), title };
+    setRecipes([...recipes, newRecipe]);
     setTitle('');
   };
 
