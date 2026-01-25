@@ -1,9 +1,7 @@
-import { Routes, Route } from 'react-router-dom';
 import AddRecipeForm from './components/AddRecipeForm';
 import RecipeList from './components/RecipeList';
 import RecipeDetails from './components/RecipeDetails';
-import { useParams } from 'react-router-dom';
-
+import { Routes, Route, useParams } from 'react-router-dom';
 
 function App() {
   return (
