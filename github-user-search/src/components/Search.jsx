@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { searchUsers } from "../services/githubService";
+import { searchUsers, fetchUserData } from "../services/githubService";
 
 function Search() {
   const [username, setUsername] = useState("");
@@ -70,12 +70,11 @@ function UserCard({ username }) {
   const [details, setDetails] = useState(null);
 
   useEffect(() => {
-    const fetchDetails = async () => {
-      const res = await fetch(`https://api.github.com/users/${username}`);
-      const data = await res.json();
+    const getUser = async () => {
+      const data = await fetchUserData(username);
       setDetails(data);
     };
-    fetchDetails();
+    getUser();
   }, [username]);
 
   if (!details) return <p>Loading...</p>;
