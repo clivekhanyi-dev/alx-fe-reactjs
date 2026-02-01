@@ -1,24 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { searchUsers } from "../services/githubService";
 
 function Search() {
   const [username, setUsername] = useState("");
   const [location, setLocation] = useState("");
-  const [repos, setRepos] = useState("");
+  const [minRepos, setMinRepos] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [page, setPage] = useState(1);
 
-  const handleSearch = async (e, newPage = 1) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(false);
+    setUsers([]);
 
     try {
-      const data = await searchUsers(username, location, repos);
+      const data = await searchUsers(username, location, minRepos);
       setUsers(data);
-      setPage(newPage);
     } catch {
       setError(true);
     } finally {
@@ -28,10 +27,7 @@ function Search() {
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
-      <form
-        onSubmit={handleSearch}
-        className="flex flex-col gap-3 md:flex-row"
-      >
+      <form onSubmit={handleSearch} className="flex flex-col gap-3 md:flex-row">
         <input
           className="border p-2 rounded"
           type="text"
@@ -50,8 +46,8 @@ function Search() {
           className="border p-2 rounded"
           type="number"
           placeholder="Min Repos"
-          value={repos}
-          onChange={(e) => setRepos(e.target.value)}
+          value={minRepos}
+          onChange={(e) => setMinRepos(e.target.value)}
         />
         <button className="bg-blue-600 text-white p-2 rounded">
           Search
@@ -63,29 +59,41 @@ function Search() {
 
       <div className="mt-6 grid gap-4">
         {users.map((user) => (
-          <div key={user.id} className="border p-3 rounded shadow">
-            <img src={user.avatar_url} alt={user.login} width="80" />
-            <h2 className="font-bold">{user.login}</h2>
-            <a
-              href={user.html_url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-600"
-            >
-              View Profile
-            </a>
-          </div>
+          <UserCard key={user.id} username={user.login} />
         ))}
       </div>
+    </div>
+  );
+}
 
-      {users.length > 0 && (
-        <button
-          onClick={(e) => handleSearch(e, page + 1)}
-          className="mt-4 bg-gray-800 text-white p-2 rounded"
-        >
-          Load More
-        </button>
-      )}
+function UserCard({ username }) {
+  const [details, setDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const res = await fetch(`https://api.github.com/users/${username}`);
+      const data = await res.json();
+      setDetails(data);
+    };
+    fetchDetails();
+  }, [username]);
+
+  if (!details) return <p>Loading...</p>;
+
+  return (
+    <div className="border p-3 rounded shadow">
+      <img src={details.avatar_url} alt={details.login} width="80" />
+      <h2 className="font-bold">{details.name || details.login}</h2>
+      <p>Location: {details.location || "N/A"}</p>
+      <p>Repos: {details.public_repos}</p>
+      <a
+        href={details.html_url}
+        target="_blank"
+        rel="noreferrer"
+        className="text-blue-600"
+      >
+        View Profile
+      </a>
     </div>
   );
 }
