@@ -6,7 +6,10 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Home Page */}
         <Route path="/" element={<HomePage />} />
+
+        {/* Recipe Detail Page */}
         <Route path="/recipe/:id" element={<RecipeDetail />} />
       </Routes>
     </Router>

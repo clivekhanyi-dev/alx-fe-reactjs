@@ -1,12 +1,27 @@
 import { useParams, Link } from "react-router-dom";
-import recipes from "../data.json";
+import { useEffect, useState } from "react";
+import recipesData from "../data.json";
 
 function RecipeDetail() {
   const { id } = useParams();
-  const recipe = recipes.find((r) => r.id === Number(id));
+  const [recipe, setRecipe] = useState(null);
+
+  useEffect(() => {
+    const foundRecipe = recipesData.find(
+      (r) => r.id === Number(id)
+    );
+    setRecipe(foundRecipe);
+  }, [id]);
 
   if (!recipe) {
-    return <h2 className="text-center mt-10">Recipe not found</h2>;
+    return (
+      <div className="text-center mt-10">
+        <p>Recipe not found</p>
+        <Link to="/" className="text-blue-500 underline">
+          Back Home
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -15,7 +30,9 @@ function RecipeDetail() {
         ← Back to Home
       </Link>
 
-      <h1 className="text-3xl font-bold mt-4 mb-4">{recipe.title}</h1>
+      <h1 className="text-3xl font-bold mt-4 mb-4">
+        {recipe.title}
+      </h1>
 
       <img
         src={recipe.image}
@@ -23,8 +40,11 @@ function RecipeDetail() {
         className="w-full rounded-xl mb-6"
       />
 
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">Ingredients</h2>
+      {/* Ingredients */}
+      <div className="mb-6 bg-white p-4 rounded-xl shadow">
+        <h2 className="text-xl font-semibold mb-2">
+          Ingredients
+        </h2>
         <ul className="list-disc pl-6">
           {recipe.ingredients.map((item, i) => (
             <li key={i}>{item}</li>
@@ -32,8 +52,11 @@ function RecipeDetail() {
         </ul>
       </div>
 
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Instructions</h2>
+      {/* Instructions */}
+      <div className="bg-white p-4 rounded-xl shadow">
+        <h2 className="text-xl font-semibold mb-2">
+          Instructions
+        </h2>
         <ol className="list-decimal pl-6">
           {recipe.instructions.map((step, i) => (
             <li key={i}>{step}</li>
