@@ -51,7 +51,16 @@ function HomePage() {
         ))}
       </div>
     </div>
+
   );
 }
+
+<Link
+  to="/add-recipe"
+  className="block text-center bg-green-500 text-white py-2 px-4 rounded-lg mb-6 hover:bg-green-600"
+>
+  Add New Recipe
+</Link>
+
 
 export default HomePage;
