@@ -5,35 +5,41 @@ function AddRecipeForm() {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [steps, setSteps] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
+
+  // Validation function
+  const validate = () => {
+    let newErrors = {};
+
+    if (!title) newErrors.title = "Title is required";
+    if (!ingredients) newErrors.ingredients = "Ingredients are required";
+    if (!steps) newErrors.steps = "Preparation steps are required";
+
+    if (ingredients && ingredients.split(",").length < 2) {
+      newErrors.ingredients = "Enter at least 2 ingredients separated by commas";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation
-    if (!title || !ingredients || !steps) {
-      setError("Please fill in all fields.");
-      return;
-    }
+    if (!validate()) return;
 
-    if (ingredients.split(",").length < 2) {
-      setError("Please enter at least two ingredients separated by commas.");
-      return;
-    }
+    alert("Recipe submitted successfully! (Mock)");
 
-    setError("");
-
-    alert("Recipe submitted successfully! (Mock submission)");
-
-    // Clear form
     setTitle("");
     setIngredients("");
     setSteps("");
+    setErrors({});
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-2xl mx-auto bg-white p-6 rounded-2xl shadow">
+
         <Link to="/" className="text-blue-500 underline">
           ← Back to Home
         </Link>
@@ -41,10 +47,6 @@ function AddRecipeForm() {
         <h1 className="text-3xl font-bold mb-6 mt-2">
           Add New Recipe 🍲
         </h1>
-
-        {error && (
-          <p className="text-red-500 mb-4">{error}</p>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -59,6 +61,9 @@ function AddRecipeForm() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
+            {errors.title && (
+              <p className="text-red-500 text-sm">{errors.title}</p>
+            )}
           </div>
 
           {/* Ingredients */}
@@ -72,6 +77,9 @@ function AddRecipeForm() {
               value={ingredients}
               onChange={(e) => setIngredients(e.target.value)}
             />
+            {errors.ingredients && (
+              <p className="text-red-500 text-sm">{errors.ingredients}</p>
+            )}
           </div>
 
           {/* Steps */}
@@ -85,6 +93,9 @@ function AddRecipeForm() {
               value={steps}
               onChange={(e) => setSteps(e.target.value)}
             />
+            {errors.steps && (
+              <p className="text-red-500 text-sm">{errors.steps}</p>
+            )}
           </div>
 
           {/* Button */}
